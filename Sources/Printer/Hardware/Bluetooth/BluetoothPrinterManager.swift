@@ -86,7 +86,7 @@ public class BluetoothPrinterManager {
 
     private let centralManager: CBCentralManager
 
-    private let centralManagerDelegate = BluetoothCentralManagerDelegate(BluetoothPrinterManager.specifiedServices)
+    private let centralManagerDelegate = BluetoothCentralManagerDelegate(BluetoothPrinterManager.printerServices)
     private let peripheralDelegate = BluetoothPeripheralDelegate(BluetoothPrinterManager.specifiedServices, characteristics: BluetoothPrinterManager.specifiedCharacteristics)
 
     public weak var delegate: PrinterManagerDelegate?
