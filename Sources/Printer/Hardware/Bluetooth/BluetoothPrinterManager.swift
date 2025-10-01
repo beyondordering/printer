@@ -74,7 +74,8 @@ public protocol PrinterManagerDelegate: NSObjectProtocol {
 
 public extension BluetoothPrinterManager {
 
-    static var specifiedServices: Set<String> = ["E7810A71-73AE-499D-8C15-FAA9AEF0C3F2"]
+    static var printerServices: Set<String> = ["000018F0-0000-1000-8000-00805F9B34FB"] // Bluetooth SIG base 16-bit UUID
+    static var specifiedServices: Set<String> = ["E7810A71-73AE-499D-8C15-FAA9AEF0C3F2"] // Proprietary 128-bit UUID (Vendor Specific)
     static var specifiedCharacteristics: Set<String>?
 }
 
@@ -199,7 +200,7 @@ public class BluetoothPrinterManager {
             return .deviceNotReady
         }
 
-        let serviceUUIDs = BluetoothPrinterManager.specifiedServices.map { CBUUID(string: $0) }
+        let serviceUUIDs = BluetoothPrinterManager.printerServices.map { CBUUID(string: $0) }
         centralManager.scanForPeripherals(withServices: serviceUUIDs, options: nil)
 
         return nil
@@ -261,7 +262,7 @@ public class BluetoothPrinterManager {
 
     public func disconnectAllPrinter() {
 
-        let serviceUUIDs = BluetoothPrinterManager.specifiedServices.map { CBUUID(string: $0) }
+        let serviceUUIDs = BluetoothPrinterManager.printerServices.map { CBUUID(string: $0) }
         
         centralManager.retrieveConnectedPeripherals(withServices: serviceUUIDs).forEach {
             centralManager.cancelPeripheralConnection($0)
