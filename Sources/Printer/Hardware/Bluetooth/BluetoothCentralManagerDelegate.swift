@@ -16,7 +16,8 @@ class BluetoothCentralManagerDelegate: NSObject, CBCentralManagerDelegate {
         static let autoConectUUID = "auto.connect.uuid"
     }
 
-    private var services: Set<String>!
+    private var printerServices: Set<String>!
+    private var specifiedServices: Set<String>!
 
     var peripheralDelegate: BluetoothPeripheralDelegate?
 
@@ -62,16 +63,17 @@ class BluetoothCentralManagerDelegate: NSObject, CBCentralManagerDelegate {
         }
     }
 
-    convenience init(_ services: Set<String>) {
+    convenience init(_ printerServices: Set<String>, specifiedServices: Set<String>) {
         self.init()
-        self.services = services
+        self.printerServices = printerServices
+        self.specifiedServices = specifiedServices
     }
 
     public func centralManagerDidUpdateState(_ central: CBCentralManager) {
 
         centralManagerDidUpdateState?(central)
 
-        let ss = services.map { CBUUID(string: $0) }
+        let ss = specifiedServices.map { CBUUID(string: $0) }
 
         // discover services for connected per.
         central.retrieveConnectedPeripherals(withServices: ss).forEach {
@@ -91,7 +93,7 @@ class BluetoothCentralManagerDelegate: NSObject, CBCentralManagerDelegate {
         // if peripheral doesn't container specified services, ignore.
         let peripheralServiceSet = Set(serviceUUIDs.map { $0.uuidString } )
 
-        guard peripheralServiceSet.intersection(services).count > 0 else {
+        guard peripheralServiceSet.intersection(printerServices).count > 0 else {
 
             return
         }
@@ -112,7 +114,7 @@ class BluetoothCentralManagerDelegate: NSObject, CBCentralManagerDelegate {
         centralManagerDidConnectPeripheral?(central, peripheral)
 
         peripheral.delegate = peripheralDelegate
-        peripheral.discoverServices(services.map { CBUUID(string: $0) })
+        peripheral.discoverServices(specifiedServices.map { CBUUID(string: $0) })
 
         // 保存已连接的uuid
         UserDefaults.standard.set(peripheral.identifier.uuidString, forKey: UserDefaultKey.autoConectUUID)

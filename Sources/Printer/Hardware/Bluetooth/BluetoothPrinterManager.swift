@@ -74,7 +74,7 @@ public protocol PrinterManagerDelegate: NSObjectProtocol {
 
 public extension BluetoothPrinterManager {
 
-    static var printerServices: Set<String> = ["000018F0-0000-1000-8000-00805F9B34FB"] // Bluetooth SIG base 16-bit UUID
+    static var printerServices: Set<String> = ["18F0"] // Bluetooth SIG base 16-bit UUID
     static var specifiedServices: Set<String> = ["E7810A71-73AE-499D-8C15-FAA9AEF0C3F2"] // Proprietary 128-bit UUID (Vendor Specific)
     static var specifiedCharacteristics: Set<String>?
 }
@@ -86,7 +86,7 @@ public class BluetoothPrinterManager {
 
     private let centralManager: CBCentralManager
 
-    private let centralManagerDelegate = BluetoothCentralManagerDelegate(BluetoothPrinterManager.printerServices)
+    private let centralManagerDelegate = BluetoothCentralManagerDelegate(BluetoothPrinterManager.printerServices, specifiedServices: BluetoothPrinterManager.specifiedServices)
     private let peripheralDelegate = BluetoothPeripheralDelegate(BluetoothPrinterManager.specifiedServices, characteristics: BluetoothPrinterManager.specifiedCharacteristics)
 
     public weak var delegate: PrinterManagerDelegate?
